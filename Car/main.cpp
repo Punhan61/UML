@@ -2,6 +2,7 @@
 #include<thread>
 #include<conio.h>
 using namespace std;
+using namespace std::chrono_literals;
 
 #define tab "\t"
 #define delimiter "\n------------------------------------------\n"
@@ -14,7 +15,7 @@ class Tank
 	const unsigned int VOLUME; // характеристика объекта
 	double fuel;               // состояние объекта
 public:
-	unsigned int get_VOLUME()const
+	unsigned int get_volume()const
 	{
 		return VOLUME;
 	}
@@ -28,8 +29,9 @@ public:
 		if (this->fuel + fuel < VOLUME)this->fuel += fuel;
 		else this->fuel = VOLUME;
 	}
-	Tank(unsigned int volume) :VOLUME(volume < MIN_TANK_VOLUME ? MIN_TANK_VOLUME:
-		volume > MAX_TANK_VOLUME ? MAX_TANK_VOLUME : volume)
+	Tank(unsigned int volume)
+		:VOLUME(volume<MIN_TANK_VOLUME ? MIN_TANK_VOLUME :
+			volume>MAX_TANK_VOLUME ? MAX_TANK_VOLUME : volume)
 	{
 		this->fuel = 0;
 		cout << "Tank is ready" << endl;
@@ -41,7 +43,7 @@ public:
 	void info()const
 	{
 		cout << "Tank volume: " << VOLUME << " liters" << endl;
-		cout << "Fuel level: " << fuel << " liters" << endl;
+		cout << "Tank level: " << fuel << " liters" << endl;
 	}
 };
 
@@ -58,7 +60,7 @@ public:
 	{
 		return consumption;
 	}
-	double get_consumption_per_second()const
+	double get_consumtion_per_second()const
 	{
 		return consumption_per_second;
 	}
@@ -66,9 +68,9 @@ public:
 		:consumption(consumption<MIN_ENGINE_CONSUMPTION?MIN_ENGINE_CONSUMPTION:
 		consumption>MAX_ENGINE_CONSUMPTION?MAX_ENGINE_CONSUMPTION:consumption)
 	{
-		consumption_per_second = consumption * 3e-5;
 		is_started = false;
-		cout << "Tank is ready" << endl;
+		consumption_per_second = consumption * 3e-5;
+		cout << "Engine is ready" << endl;
 	}
 	~Engine()
 	{
@@ -88,16 +90,16 @@ public:
 	}
 	void info()const
 	{
-		cout << "Consumption/100  km: " << consumption << " liters" << endl;
-		cout << "Consumption/1sec km: " << consumption_per_second << " liters" << endl;
+		cout << "Consuption/100  km: " << consumption << " liters" << endl;
+		cout << "Consuption/1sec km: " << consumption_per_second << " liters" << endl;
 		cout << "Engine is " << (is_started ? "started" : "stopped") << endl;
 	}
 };
 
 class Car
 {
-	Engine engine;
 	Tank tank;
+	Engine engine;
 	bool driver_inside;
 	struct Control
 	{
@@ -106,7 +108,8 @@ class Car
 public:
 	Car(double consumption, int volume) :engine(consumption), tank(volume)
 	{
-		cout << "Your car is ready to go" << endl;
+		driver_inside = false;
+		cout << "Your car is to go" << endl;
 	}
 	~Car()
 	{
@@ -138,10 +141,10 @@ public:
 				else get_in();
 				break;
 			case 'F':
-			case'f':
+			case 'f':
 				if (driver_inside)
 				{
-					cout << "Чтобы заправиться, выйдите из машины" << endl;
+					cout << "Чтобы заправиться выйдите из машины" << endl;
 				}
 				else
 				{
@@ -150,14 +153,15 @@ public:
 					tank.fill(fuel);
 				}
 				break;
-			case'I': // Зажигание
-			case'i':
+			case 'I':  // Зажигание
+			case 'i':
 				
 			case 27:
 				get_out();
 				cout << "Good buy;-)" << endl;
+				break;
 			}
-		} while (key!=27);
+		} while (key != 27);
 	}
 
 	void panel()const
@@ -174,6 +178,7 @@ public:
 	{
 		engine.info();
 		tank.info();
+
 	}
 };
 
@@ -199,6 +204,6 @@ void main()
 #endif // ENGINE_CHECK
 
 	Car bmw(12, 60);
-	//bmw.info();
+    //bmw.info();
 	bmw.control();
 }
